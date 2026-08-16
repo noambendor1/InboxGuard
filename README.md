@@ -114,7 +114,7 @@ Four categories, each with its own maximum, summing to exactly 100:
 |---|---|---|
 | Sender & Identity | 30 | SPF/DKIM/DMARC results, From/Reply-To mismatch, Return-Path mismatch, display-name brand impersonation |
 | Links | 30 | HTTP vs HTTPS, IP-address hosts, punycode, shorteners, suspicious paths, link-text vs. href mismatch, **Google Safe Browsing** |
-| Content | 20 | Keyword *groups* (credential requests, urgency, payment/financial, threats, sensitive-info requests) — a combination bonus rewards multiple groups matching together |
+| Content | 20 | Keyword *groups*, in English and Hebrew (credential requests, urgency, payment/financial, threats, sensitive-info requests) — a combination bonus rewards multiple groups matching together |
 | Attachments | 20 | Filename/extension, double extensions (`invoice.pdf.exe`), MIME/extension mismatch, archive files |
 
 Each category's raw total is **capped at its maximum** before summing, so no single category (e.g. ten small link findings) can dominate the score through sheer volume, and the total can never exceed 100 by construction (30+30+20+20=100). See `backend/src/scoring/scoreEngine.ts`.
@@ -219,6 +219,7 @@ The Add-on signs every request: `HMAC-SHA256(sharedSecret, timestamp + "." + req
 - **Trusted-sender convenience vs. compromised-account risk.** Solved by never letting trust suppress high-confidence findings (§6) — convenience only ever reduces noise, never coverage.
 - **HMAC demo auth vs. production auth.** Simple to implement and explain; weaker than OIDC/IAM-based auth (see §8). Fine for this MVP; documented as a known gap.
 - **No LLM.** See §2 and `docs/ARCHITECTURE_AND_DECISIONS.md` for the prompt-injection reasoning specifically.
+- **Language coverage.** The content-analysis keyword groups currently cover English and Hebrew. An email using social-engineering language in another language won't trigger content-based findings, though sender-identity, link, and Safe Browsing checks are language-independent and still run normally.
 
 ---
 
@@ -282,6 +283,7 @@ See [`docs/DEMO.md`](docs/DEMO.md) for five ready-to-send sample emails and a 3�
 
 - Google Web Risk API for a commercial-grade threat intelligence tier
 - Domain reputation / domain age signals
+- Broader language coverage for the content-analysis keyword groups beyond English and Hebrew
 - Sandboxed attachment scanning (opt-in, with clear consent)
 - A machine-learning classifier layered on top of (not replacing) the deterministic rules, with the rules as a fallback/explainer
 - Organization-specific policies (admin-configured thresholds, allowlists)
