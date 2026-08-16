@@ -8,6 +8,49 @@ To actually demo the product on a real Gmail account, see [`docs/DEMO.md`](docs/
 
 ---
 
+## Quick Start
+
+The condensed version, for anyone already comfortable with a command line, Google Cloud, and Apps Script. For literal, click-by-click beginner instructions (creating a Google Cloud project, enabling billing, creating a Safe Browsing key, etc.) use [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) instead.
+
+**1. Clone and verify the code works — no cloud account needed for this step:**
+```bash
+git clone https://github.com/noambendor1/InboxGuard.git
+cd InboxGuard/backend
+npm install
+npm test
+```
+Expect `27 passed (27)`. This alone proves the analysis engine works correctly, independent of any deployment.
+
+**2. Deploy the backend to Cloud Run:**
+```bash
+gcloud auth login
+gcloud config set project YOUR_PROJECT_ID
+gcloud services enable run.googleapis.com cloudbuild.googleapis.com artifactregistry.googleapis.com
+
+gcloud run deploy inboxguard-backend \
+  --source . \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars INBOXGUARD_SHARED_SECRET="$(openssl rand -hex 32)",SAFE_BROWSING_API_KEY="",MAX_REQUEST_AGE_SECONDS=300
+```
+Copy the printed **Service URL** and the secret you generated — both are needed in step 3. (Leaving `SAFE_BROWSING_API_KEY` empty is fine; see [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) Part B to add it later.)
+
+**3. Install the Gmail Add-on:**
+```bash
+npm install -g @google/clasp@2.4.2
+clasp login
+cd ../addon
+clasp create --type standalone --title "InboxGuard" --rootDir ./src
+clasp push --force
+```
+> If `clasp create` writes `.clasp.json` inside `addon/src/` instead of `addon/`, move it up one level (`mv src/.clasp.json .`) before running `clasp push` — otherwise it looks for source files in a non-existent `src/src/` folder. Also prefer `clasp@2.4.2` specifically: newer `clasp` v3 releases have a known `Insufficient Permission` bug on `create`.
+
+Then, in the Apps Script editor (`clasp open`): **Project Settings** → **Script Properties** → add `BACKEND_URL` (the Service URL from step 2) and `INBOXGUARD_SHARED_SECRET` (the same secret from step 2) → **Deploy** → **Test deployments** → **Install**.
+
+**4. Try it:** open Gmail, open any email, click the InboxGuard icon in the right-hand sidebar.
+
+---
+
 ## 1. Overview
 
 When you open an email, InboxGuard's Gmail sidebar answers three questions:
