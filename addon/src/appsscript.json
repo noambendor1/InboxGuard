@@ -25,7 +25,6 @@
         "primaryColor": "#1a73e8",
         "secondaryColor": "#d93025"
       },
-      "useLocaleFromApp": true,
       "homepageTrigger": {
         "runFunction": "onHomepage"
       }
