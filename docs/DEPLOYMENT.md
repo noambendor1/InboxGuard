@@ -68,7 +68,7 @@ gcloud run deploy inboxguard-backend \
 
 - The first time you run this, `gcloud` may ask to enable Artifact Registry or confirm a region — type `y` / press Enter to accept.
 - This builds your Dockerfile in the cloud (Cloud Build) and deploys it — it can take a few minutes the first time.
-- `--allow-unauthenticated` is required here because InboxGuard uses its own HMAC signing (§8 of the README) instead of Cloud Run's IAM auth for this demo.
+- `--allow-unauthenticated` is required here because InboxGuard uses its own HMAC signing (§9 of the README) instead of Cloud Run's IAM auth for this demo.
 - Leave `SAFE_BROWSING_API_KEY` empty for now — you'll update it in Part B once you have a real key. The app works fine without it (Safe Browsing lookups just report "unavailable" and local heuristics still run).
 
 **Success looks like:** the command ends by printing a **Service URL**, something like:

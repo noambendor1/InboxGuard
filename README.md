@@ -164,7 +164,21 @@ Users can undo trust at any time ("Remove from trusted senders").
 
 ---
 
-## 7. Explainability
+## 7. Blocking a sender
+
+When you click **Block this sender**, InboxGuard shows a confirmation screen before doing anything — this is a one-way action worth a deliberate pause.
+
+**An important limitation, stated plainly rather than assumed away:** Gmail's own native "Block sender" menu action (the one in the "⋮" menu on a message) is not exposed through any public Gmail API or Apps Script method. No third-party Add-on can trigger that exact built-in feature. Rather than silently do nothing, or worse, claim success without actually blocking anything, InboxGuard uses the closest real, documented, supported capability instead: the Gmail API's mail-filter feature (`users.settings.filters.create`) to create a filter that automatically sends all future messages from that address straight to Trash. For day-to-day purposes this produces the same outcome a user actually cares about — that sender's mail stops reaching the inbox — through a mechanism that genuinely exists.
+
+- **Confirmation first**, every time — no one-click destructive action.
+- **Honest success/failure.** If Gmail rejects the filter creation (permissions, quota, transient error), InboxGuard shows a clear failure message. It never reports "Sender blocked" unless the filter was actually created.
+- **Least-privilege scope.** This uses only the `gmail.settings.basic` OAuth scope — not full mailbox read/write access.
+
+See `addon/src/Actions.js` for the implementation, and `docs/ARCHITECTURE_AND_DECISIONS.md` §5 for the full reasoning behind choosing this fallback over pretending a native block API exists.
+
+---
+
+## 8. Explainability
 
 Every signal the detectors find becomes a structured `Finding`:
 
@@ -181,7 +195,7 @@ Findings are sorted by severity/importance; the UI shows the top ~5 prominently 
 
 ---
 
-## 8. Security & privacy
+## 9. Security & privacy
 
 - **Untrusted input.** The entire email (sender, headers, subject, body, links, attachment metadata) is treated as attacker-controlled. Zod validation enforces strict shapes and length caps on every field (`backend/src/validation/analyzeRequest.ts`); the HTTP body is capped at 256KB.
 - **No email HTML is ever rendered or executed**, by the Add-on or the backend. The Add-on uses Gmail's own plain-text rendering (`getPlainBody()`) for content analysis and a narrow, non-executing regex scan of the raw HTML only to pull out `(href, link text)` pairs.
@@ -210,20 +224,20 @@ The Add-on signs every request: `HMAC-SHA256(sharedSecret, timestamp + "." + req
 
 ---
 
-## 9. Trade-offs
+## 10. Trade-offs
 
 - **Deterministic heuristics vs. ML/LLM.** Chosen for auditability, zero inference cost, instant explainability, and zero prompt-injection surface. Trade-off: it won't catch novel phishing patterns that don't match any rule, and rules need manual tuning over time.
 - **Safe Browsing (known threats) vs. new/zero-day threats.** Strong on confirmed threats, blind to brand-new infrastructure — mitigated, not solved, by local heuristics.
 - **Explainability vs. detection sophistication.** A more opaque ML classifier might catch more, but "trust me" is a worse UX for a security tool than a slightly-less-sophisticated system the user can actually verify.
 - **Metadata-only attachments vs. real scanning.** Catches the classic disguised-executable pattern; misses genuinely malicious content hidden inside an innocuously-named, correctly-typed file. A real sandbox/AV scan is future work.
 - **Trusted-sender convenience vs. compromised-account risk.** Solved by never letting trust suppress high-confidence findings (§6) — convenience only ever reduces noise, never coverage.
-- **HMAC demo auth vs. production auth.** Simple to implement and explain; weaker than OIDC/IAM-based auth (see §8). Fine for this MVP; documented as a known gap.
+- **HMAC demo auth vs. production auth.** Simple to implement and explain; weaker than OIDC/IAM-based auth (see §9). Fine for this MVP; documented as a known gap.
 - **No LLM.** See §2 and `docs/ARCHITECTURE_AND_DECISIONS.md` for the prompt-injection reasoning specifically.
 - **Language coverage.** The content-analysis keyword groups currently cover English and Hebrew. An email using social-engineering language in another language won't trigger content-based findings, though sender-identity, link, and Safe Browsing checks are language-independent and still run normally.
 
 ---
 
-## 10. Running locally
+## 11. Running locally
 
 Requires Node.js 20+.
 
@@ -238,7 +252,7 @@ npm run dev
 
 The server starts on `http://localhost:8080` (or `PORT` from `.env`). `GET /health` should return `{"status":"ok"}` without authentication; `POST /analyze` requires a valid HMAC signature (see `backend/tests/httpIntegration.test.ts` for a working example of signing a request in Node).
 
-## 11. Running tests
+## 12. Running tests
 
 ```bash
 cd backend
@@ -253,7 +267,7 @@ npm run build    # TypeScript compile check
 
 ---
 
-## 12. Deployment
+## 13. Deployment
 
 Full beginner-friendly walkthrough (Google Cloud project setup, enabling APIs, creating the Safe Browsing key, clasp/Apps Script setup) is in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md). Short version, once you have a Google Cloud project with billing enabled:
 
@@ -271,15 +285,15 @@ gcloud run deploy inboxguard-backend \
 
 Copy the printed Service URL — you'll paste it into the Add-on's `BACKEND_URL` Script Property.
 
-## 13. Gmail Add-on installation
+## 14. Gmail Add-on installation
 
 Full beginner walkthrough (installing clasp, logging in, enabling the Apps Script API, pushing code, setting Script Properties, installing a test deployment) is in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
-## 14. Demo script
+## 15. Demo script
 
 See [`docs/DEMO.md`](docs/DEMO.md) for five ready-to-send sample emails and a 3–5 minute demo flow.
 
-## 15. Future improvements
+## 16. Future improvements
 
 - Google Web Risk API for a commercial-grade threat intelligence tier
 - Domain reputation / domain age signals
