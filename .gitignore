@@ -1,0 +1,13 @@
+node_modules/
+dist/
+build/
+*.log
+.env
+.env.local
+backend/.env
+backend/dist/
+backend/coverage/
+addon/.clasp.json
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
