@@ -54,7 +54,23 @@ function callAnalyzeEndpoint(payload) {
 
   var statusCode = response.getResponseCode();
   if (statusCode < 200 || statusCode >= 300) {
-    return { ok: false, message: "The analysis service returned an error. Please try again in a moment." };
+    // Surface the backend's own (already-sanitized, non-sensitive) reason
+    // when available, e.g. "Invalid signature." - this only ever appears
+    // during misconfiguration, not during normal use, and never includes
+    // secrets or stack traces.
+    var reason = "";
+    try {
+      var errorBody = JSON.parse(response.getContentText());
+      if (errorBody && errorBody.message) {
+        reason = " (" + errorBody.message + ")";
+      }
+    } catch (err) {
+      // response wasn't JSON; fall back to the generic message below
+    }
+    return {
+      ok: false,
+      message: "The analysis service returned an error. Please try again in a moment." + reason
+    };
   }
 
   var parsed;

@@ -10,6 +10,9 @@ export const CONTENT_CATEGORY_MAX = 20;
  * groups match. This keeps a normal "urgent: Q3 numbers" business email out
  * of HIGH RISK while still catching classic phishing templates.
  */
+// Phrases are intentionally bilingual (English + Hebrew): a rule engine that
+// only recognizes English pressure tactics is blind to phishing/scam email
+// written in any other language, which is a real gap, not a hypothetical one.
 const KEYWORD_GROUPS: Record<string, string[]> = {
   credential: [
     "verify your password",
@@ -23,7 +26,17 @@ const KEYWORD_GROUPS: Record<string, string[]> = {
     "reactivate your account",
     "unusual sign-in activity",
     "security alert",
-    "confirm your identity"
+    "confirm your identity",
+    // Hebrew
+    "אמת את הסיסמה",
+    "אימות סיסמה",
+    "אמת את החשבון",
+    "אימות חשבון",
+    "החשבון הושעה",
+    "החשבון ננעל",
+    "כניסה חריגה",
+    "התראת אבטחה",
+    "אמת את הזהות"
   ],
   urgency: [
     "urgent",
@@ -34,7 +47,15 @@ const KEYWORD_GROUPS: Record<string, string[]> = {
     "final notice",
     "within 24 hours",
     "your account will be closed",
-    "action required"
+    "action required",
+    // Hebrew
+    "דחוף",
+    "באופן מיידי",
+    "מיידי",
+    "בהקדם האפשרי",
+    "התראה סופית",
+    "תוך 24 שעות",
+    "נדרשת פעולה"
   ],
   payment: [
     "wire transfer",
@@ -47,7 +68,16 @@ const KEYWORD_GROUPS: Record<string, string[]> = {
     "routing number",
     "payment overdue",
     "unpaid invoice",
-    "purchase gift cards"
+    "purchase gift cards",
+    // Hebrew
+    "העברה בנקאית",
+    "כרטיס מתנה",
+    "ביטקוין",
+    "מטבע קריפטוגרפי",
+    "פרטי חשבון בנק",
+    "חוב",
+    "תשלום באיחור",
+    "חשבונית שלא שולמה"
   ],
   threat: [
     "legal action",
@@ -56,13 +86,26 @@ const KEYWORD_GROUPS: Record<string, string[]> = {
     "unauthorized access detected",
     "suspicious activity detected",
     "penalty",
-    "failure to comply"
+    "failure to comply",
+    // Hebrew
+    "הליכים משפטיים",
+    "עיקול",
+    "עיקולים",
+    "הליכי גבייה",
+    "פעילות לא מורשית זוהתה",
+    "פעילות חשודה זוהתה",
+    "קנס",
+    "ללא אפשרות ביטול"
   ],
   sensitiveInfo: [
     "social security number",
     "date of birth",
     "credit card number",
-    "billing address and password"
+    "billing address and password",
+    // Hebrew
+    "מספר תעודת זהות",
+    "תאריך לידה",
+    "מספר כרטיס אשראי"
   ]
 };
 

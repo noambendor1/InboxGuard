@@ -28,7 +28,15 @@ function signRequestBody_(bodyString) {
   var timestamp = String(Math.floor(Date.now() / 1000));
   var signedPayload = timestamp + "." + bodyString;
 
-  var rawSignature = Utilities.computeHmacSha256Signature(signedPayload, secret);
+  // Explicitly encode to UTF-8 bytes before signing. computeHmacSha256Signature's
+  // plain-string overload is ambiguous about character encoding for non-ASCII
+  // text (e.g. non-English email content), while the actual HTTP request body
+  // is always sent as UTF-8 - going through Utilities.newBlob(...).getBytes()
+  // guarantees the bytes we sign are the same bytes that get transmitted.
+  var payloadBytes = Utilities.newBlob(signedPayload).getBytes();
+  var keyBytes = Utilities.newBlob(secret).getBytes();
+
+  var rawSignature = Utilities.computeHmacSha256Signature(payloadBytes, keyBytes);
   var signatureHex = rawSignature
     .map(function (byte) {
       var v = (byte < 0 ? byte + 256 : byte).toString(16);
