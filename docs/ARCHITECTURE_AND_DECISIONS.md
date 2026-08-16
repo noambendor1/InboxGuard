@@ -1,6 +1,6 @@
 # Architecture & Decisions — plain-language guide
 
-This document assumes no software engineering background. Its goal is to let you confidently explain InboxGuard in an interview — what it is, how it works, and why it was built this way — without needing to read code.
+This document assumes no software engineering background. Its goal is to let you confidently explain InboxGuard to someone else — what it is, how it works, and why it was built this way — without needing to read code.
 
 ---
 
@@ -78,14 +78,14 @@ That preference is sent along with every future analysis of an email from that s
 
 ## 5. How "blocking" works, and its real limitation
 
-This is an important one to be honest about in an interview, because it's a case where the "obvious" feature doesn't actually exist as a public API, and the assignment specifically asked for that to be verified rather than assumed.
+This is an important one to be honest about, because it's a case where the "obvious" feature doesn't actually exist as a public API — it's worth verifying the real API surface rather than assuming it.
 
 **The thing Gmail's own menu calls "Block sender"** (available when you click the "⋮" menu on an email) is an internal Gmail feature. As of today, there is no public Gmail API or Apps Script method that performs that exact action — it's not exposed for third-party programs to call.
 
 **What InboxGuard actually does instead:** it uses the Gmail API's mail *filter* feature (the same mechanism behind Gmail's "Filters and Blocked Addresses" settings) to create a filter that matches the sender's address and automatically sends their future messages to Trash. This produces the same practical day-to-day result for the user — you stop seeing mail from that address in your inbox — through a real, supported, documented API, rather than an API that doesn't exist.
 
 **What we chose:** a filter-based fallback, clearly labeled as such in the UI's confirmation step.
-**Why:** the assignment explicitly required verifying the real API surface rather than assuming a "Block sender" endpoint exists, and required never claiming an action succeeded if it didn't actually happen. This is the honest, closest-available option.
+**Why:** it's important to verify the real API surface rather than assume a "Block sender" endpoint exists, and to never claim an action succeeded if it didn't actually happen. This is the honest, closest-available option.
 **Trade-off:** it's not byte-for-byte identical to Gmail's native block (for example, it won't affect things like "add to contacts" suggestions the way the native feature might) — but it reliably stops future mail from that address from reaching the inbox, which is the outcome that matters.
 
 ---
@@ -114,7 +114,7 @@ This is an important one to be honest about in an interview, because it's a case
 
 **A pragmatic, documented shared-secret authentication scheme between the Add-on and the backend, instead of a production-grade credential system.**
 *What:* HMAC-SHA256 signing with one static secret, valid for ~5 minutes per request.
-*Why:* Simple to build, explain, and test for a take-home; still meaningfully better than an unauthenticated endpoint.
+*Why:* Simple to build, explain, and test; still meaningfully better than an unauthenticated endpoint.
 *Trade-off:* A single leaked secret compromises the channel until rotated, and there's no protection against a captured request being replayed within its validity window. Documented explicitly (README §8) as something to upgrade to Google-signed identity tokens in a real production system.
 
 ---
@@ -127,7 +127,7 @@ This is an important one to be honest about in an interview, because it's a case
 - "Blocking" is a filter-based approximation of Gmail's native feature, not the feature itself (see §5).
 - The HMAC authentication scheme is a demo-grade mechanism, not production-grade (see §6).
 - There's no persistent record of past analyses — by design, for privacy — which also means there's no history/audit trail to look back on later.
-- Detection rules and thresholds were hand-tuned by engineering judgment during this take-home, not validated against a large real-world labeled dataset.
+- Detection rules and thresholds were hand-tuned by engineering judgment, not validated against a large real-world labeled dataset.
 
 ## 8. What should change before this became a real product
 

@@ -1,6 +1,6 @@
 # Demo guide
 
-Five safe, self-contained sample emails you can send to your own inbox, plus a 3–5 minute interview demo flow. Nothing here is real malware — every "dangerous" link points at a private/non-routable address or a domain that doesn't resolve to anything, and InboxGuard never visits links anyway (see README §8). Don't click the demo links regardless.
+Five safe, self-contained sample emails you can send to your own inbox, plus a 3–5 minute demo flow. Nothing here is real malware — every "dangerous" link points at a private/non-routable address or a domain that doesn't resolve to anything, and InboxGuard never visits links anyway (see README §8). Don't click the demo links regardless.
 
 All five scenarios assume you have the Gmail Add-on installed (see `docs/DEPLOYMENT.md`, Part C) and are sending emails **to yourself** from your own Gmail account (or any account — the point is just that they land in an inbox where you have the add-on installed).
 
@@ -107,11 +107,11 @@ Two ways to show it live anyway:
 
 **A. Zipped attachment (works in real Gmail).** Attach any small file inside a `.zip` — InboxGuard's metadata-only design intentionally does not open archive contents, so this triggers the lower-severity "archive attachments can hide dangerous files" finding, which is itself worth showing (it's the conservative, honest behavior described in the README: we don't pretend to see inside a zip).
 
-**B. Direct backend call (proves the stronger detector works).** Since the detector only looks at filename metadata, you can demonstrate it directly against your deployed backend with a signed `curl` request carrying `"filename": "invoice.pdf.exe"` — this is exactly what the Add-on would send if the file had arrived via a mail provider that doesn't block the attachment (many don't). This is also precisely what `backend/tests/analyzeEmail.test.ts` test #7 verifies automatically. A good talking point for the interview: *"Gmail already blocks the most obvious case client-side — InboxGuard's value is in the cases that get through, whether that's a more obscure extension or a different mail provider."*
+**B. Direct backend call (proves the stronger detector works).** Since the detector only looks at filename metadata, you can demonstrate it directly against your deployed backend with a signed `curl` request carrying `"filename": "invoice.pdf.exe"` — this is exactly what the Add-on would send if the file had arrived via a mail provider that doesn't block the attachment (many don't). This is also precisely what `backend/tests/analyzeEmail.test.ts` test #7 verifies automatically. Worth pointing out: *"Gmail already blocks the most obvious case client-side — InboxGuard's value is in the cases that get through, whether that's a more obscure extension or a different mail provider."*
 
 ---
 
-## Suggested 3–5 minute interview demo flow
+## Suggested 3–5 minute demo flow
 
 1. **Open Scenario 1** → LOW RISK. "Notice it never claims the email is *safe* — just that nothing suspicious was found, plus the disclaimer at the bottom."
 2. **Open Scenario 3** → HIGH RISK. Walk through the WHY section findings, then WHAT SHOULD I DO. Point out the words LOW/SUSPICIOUS/HIGH are always visible text, not just a color.

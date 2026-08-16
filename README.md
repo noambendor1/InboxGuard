@@ -1,6 +1,6 @@
 # InboxGuard
 
-InboxGuard is a Gmail Add-on that looks at whatever email you currently have open and tells you, in plain language, whether it looks risky, why, and what to do about it. It is a take-home/interview MVP: a Google Apps Script Add-on (thin client) talking to a Node.js/TypeScript backend (all the actual analysis), with Google Safe Browsing folded in as one signal among several.
+InboxGuard is a Gmail Add-on that looks at whatever email you currently have open and tells you, in plain language, whether it looks risky, why, and what to do about it. It is an MVP: a Google Apps Script Add-on (thin client) talking to a Node.js/TypeScript backend (all the actual analysis), with Google Safe Browsing folded in as one signal among several.
 
 If you're preparing to talk about this project without a software engineering background, read [`docs/ARCHITECTURE_AND_DECISIONS.md`](docs/ARCHITECTURE_AND_DECISIONS.md) first — it explains every technical concept used here (SPF/DKIM/DMARC, HMAC, SSRF, Cloud Run, etc.) in plain English, decision by decision.
 
@@ -28,7 +28,7 @@ InboxGuard is not just a detector. It's a decision-support tool: it converts a p
 
 **Why an internal numeric score still exists.** The backend still computes a 0–100 score internally. It's a useful, consistent way to combine many small signals, rank findings by importance, and pick a threshold — it's an implementation detail, not a promise to the user.
 
-**Why explainability matters.** "HIGH RISK, trust us" is not useful and not verifiable. Every finding carries a plain-language explanation *and* a technical explanation, so the user (and you, in an interview) can see exactly why InboxGuard reached its verdict.
+**Why explainability matters.** "HIGH RISK, trust us" is not useful and not verifiable. Every finding carries a plain-language explanation *and* a technical explanation, so the user can see exactly why InboxGuard reached its verdict.
 
 **Why recommended actions matter.** Telling someone "this is risky" without telling them what to actually *do* leaves them stuck. InboxGuard always closes with one specific, actionable instruction tied to the strongest finding (e.g. "don't enter your password via this link," not "be careful").
 
@@ -145,7 +145,7 @@ The final score maps to a risk level:
 
 **Failure handling.** Safe Browsing calls have a 3-second timeout and are wrapped in try/catch. Any timeout, network error, non-2xx response, or quota error results in the analysis continuing with local heuristics alone; the user sees a neutral note ("Link reputation check was unavailable") instead of a broken feature or a leaked API error. See `backend/src/safebrowsing/safeBrowsingClient.ts`.
 
-**Note on production use.** This project uses the Safe Browsing API (v4) for the take-home/demo because it's simple, free at low volume, and well documented. A production/commercial deployment should evaluate Google's [Web Risk API](https://cloud.google.com/web-risk) instead, which is the product Google positions for commercial integrations, and review its licensing terms.
+**Note on production use.** This project uses the Safe Browsing API (v4) for this demo because it's simple, free at low volume, and well documented. A production/commercial deployment should evaluate Google's [Web Risk API](https://cloud.google.com/web-risk) instead, which is the product Google positions for commercial integrations, and review its licensing terms.
 
 ---
 
@@ -204,7 +204,7 @@ The Add-on signs every request: `HMAC-SHA256(sharedSecret, timestamp + "." + req
 - rejects timestamps older than ~5 minutes (replay protection window),
 - never logs the secret.
 
-**This is a pragmatic take-home/demo mechanism**, not a production-grade design. It uses a single long-lived static secret shared between two systems, and its replay protection is only a time window (no nonce cache, so a captured request could technically be replayed within that window). A production system should prefer either:
+**This is a pragmatic demo mechanism**, not a production-grade design. It uses a single long-lived static secret shared between two systems, and its replay protection is only a time window (no nonce cache, so a captured request could technically be replayed within that window). A production system should prefer either:
 - Cloud Run's built-in IAM authentication (`--no-allow-unauthenticated`) combined with Apps Script's `ScriptApp.getIdentityToken()` to obtain a short-lived, Google-signed OIDC token per request, verified against Google's public keys — no shared secret to leak, ever; or
 - a nonce-based replay cache in addition to the timestamp window, and periodic secret rotation.
 
@@ -217,7 +217,7 @@ The Add-on signs every request: `HMAC-SHA256(sharedSecret, timestamp + "." + req
 - **Explainability vs. detection sophistication.** A more opaque ML classifier might catch more, but "trust me" is a worse UX for a security tool than a slightly-less-sophisticated system the user can actually verify.
 - **Metadata-only attachments vs. real scanning.** Catches the classic disguised-executable pattern; misses genuinely malicious content hidden inside an innocuously-named, correctly-typed file. A real sandbox/AV scan is future work.
 - **Trusted-sender convenience vs. compromised-account risk.** Solved by never letting trust suppress high-confidence findings (§6) — convenience only ever reduces noise, never coverage.
-- **HMAC demo auth vs. production auth.** Simple to implement and explain; weaker than OIDC/IAM-based auth (see §8). Fine for a take-home; documented as a known gap.
+- **HMAC demo auth vs. production auth.** Simple to implement and explain; weaker than OIDC/IAM-based auth (see §8). Fine for this MVP; documented as a known gap.
 - **No LLM.** See §2 and `docs/ARCHITECTURE_AND_DECISIONS.md` for the prompt-injection reasoning specifically.
 
 ---
@@ -276,7 +276,7 @@ Full beginner walkthrough (installing clasp, logging in, enabling the Apps Scrip
 
 ## 14. Demo script
 
-See [`docs/DEMO.md`](docs/DEMO.md) for five ready-to-send sample emails and a 3–5 minute interview demo flow.
+See [`docs/DEMO.md`](docs/DEMO.md) for five ready-to-send sample emails and a 3–5 minute demo flow.
 
 ## 15. Future improvements
 
@@ -302,7 +302,7 @@ See [`docs/DEMO.md`](docs/DEMO.md) for five ready-to-send sample emails and a 3�
     src/
     tests/
   docs/
-    ARCHITECTURE_AND_DECISIONS.md   Interview-prep doc, no CS background assumed
+    ARCHITECTURE_AND_DECISIONS.md   Plain-language deep dive, no CS background assumed
     DEPLOYMENT.md                    Full beginner-friendly deployment walkthrough
     DEMO.md                          Sample emails + demo script
   README.md          This file
