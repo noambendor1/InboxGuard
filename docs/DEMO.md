@@ -51,24 +51,27 @@ No links or attachments — just mild urgency + a vague account/payment referenc
 
 ---
 
-## Scenario 3 — Simulated phishing → HIGH RISK
+## Scenario 3 — Simulated phishing → SUSPICIOUS
 
-**Subject:** Urgent: Verify your account immediately
+**Subject:** Final Notice - Immediate Payment Required
 
 **Body:**
 ```
-Your account has been suspended due to unusual activity.
+FINAL NOTICE:
 
-To restore access, please verify your account immediately by confirming
-your password below. You must act within 24 hours or your account will be
-permanently closed.
+This is a payment overdue notice. Your account has been suspended and
+this matter is now proceeding to legal action, with no option to cancel
+or delay.
 
-Verify my account: [insert link below]
+To avoid further action, verify your account immediately and complete
+payment using the official link below:
 ```
 
-For the link: use **Insert link**, set the display text to `https://paypal.com/login`, and set the actual URL to `http://192.168.10.5/login/verify`.
+For the link: use **Insert link**, set the display text to `account-billing.com`, and set the actual URL to `http://203.0.113.7/verify-payment`. (`203.0.113.7` is an address permanently reserved for documentation examples — it isn't a real, reachable site, so there's no risk even if it's clicked by accident.)
 
-Also set the **From/sender display name** to something like "PayPal Security" if your mail client lets you set a display name that doesn't match your actual address (many don't — if not, this specific finding just won't fire, which is fine; the link + content signals alone are enough to reach HIGH RISK). Expected verdict: **HIGH RISK** — look for "Link text does not match its destination," "A link points to a raw IP address," and the content combination finding.
+**Verified result:** InboxGuard correctly returns **SUSPICIOUS**, leading with "This link is displayed as 'account-billing.com' but actually points to '203.0.113.7'," followed by "One of the links points directly to a numeric address instead of a normal website name," and the content combination finding for the urgency/payment/threat language.
+
+To push this specific example over the line into HIGH RISK, add either a genuine sender mismatch (a display name claiming a real brand while the address doesn't match — see the display-name check in README §4) or a confirmed Safe Browsing match (README §5) - a link that looks clean structurally but is already known-bad is exactly the case that override exists for.
 
 ---
 
@@ -85,17 +88,11 @@ Also set the **From/sender display name** to something like "PayPal Security" if
 
 This demonstrates the most important product decision: **trust never overrides strong security evidence.**
 
-1. Using the **same sender address** you just marked as trusted in Scenario 4, send yourself:
+1. Using the **same sender address** you just marked as trusted in Scenario 4, send yourself the exact same email as **Scenario 3** (same subject, body, and link).
 
-   **Subject:** Here's that file you asked for
+2. Open it. Expected verdict: **SUSPICIOUS**, same findings as Scenario 3 (the link-text mismatch, the raw IP address, the content combination) — plus a small note: *"You previously marked this sender as trusted."* The point being demonstrated: trusting a sender did **not** make the link-based findings disappear. They're identical to Scenario 3's, appearing on an email from a sender you explicitly said you trust.
 
-   **Body:**
-   ```
-   Hey, sorry for the delay — here's the link to the shared file.
-   ```
-   Link (via Insert link): display text `Open shared file`, destination `http://192.168.10.5/login/verify` (the same IP-based link from Scenario 3).
-
-2. Open it. Expected verdict: **HIGH RISK**, with the summary reading *"You previously trusted this sender, but this message contains strong security risks."* The trust note is shown, but small and secondary — the HIGH RISK verdict is what's visually dominant.
+**To make this land as HIGH RISK instead of SUSPICIOUS** (a more dramatic demo moment), a real Google-confirmed malicious link or a genuine sender-domain mismatch is needed — neither of which this guide can safely simulate live (the demo link deliberately points nowhere real, and a self-sent Gmail message can't spoof its own From domain). The honest way to show the full HIGH RISK override live is a direct signed API call: see `backend/tests/trustedSender.test.ts` test #16, which does exactly this against a mocked Safe Browsing response and asserts `HIGH_RISK` - or run the same request shape against your deployed backend with `isTrustedSender: true` and a `links` entry your Safe Browsing key has flagged (once Part B is set up).
 
 ---
 
@@ -114,8 +111,8 @@ Two ways to show it live anyway:
 ## Suggested 3–5 minute demo flow
 
 1. **Open Scenario 1** → LOW RISK. "Notice it never claims the email is *safe* — just that nothing suspicious was found, plus the disclaimer at the bottom."
-2. **Open Scenario 3** → HIGH RISK. Walk through the WHY section findings, then WHAT SHOULD I DO. Point out the words LOW/SUSPICIOUS/HIGH are always visible text, not just a color.
-3. **Mention Safe Browsing** briefly: "The Links category also runs every URL against Google Safe Browsing server-side — the Add-on never sees the API key, and if Safe Browsing is down, the analysis still completes using local heuristics."
+2. **Open Scenario 3** → SUSPICIOUS. Walk through the WHY section findings, then WHAT SHOULD I DO. Point out the words LOW/SUSPICIOUS/HIGH are always visible text, not just a color.
+3. **Mention Safe Browsing** briefly: "The Links category also runs every URL against Google Safe Browsing server-side — the Add-on never sees the API key, and if Safe Browsing is down, the analysis still completes using local heuristics. If this exact link were already confirmed malicious by Google, it would jump straight to HIGH RISK regardless of the score."
 4. **Show the two user actions**: click into "Block this sender" to show the confirmation step, then explain the "Ignore — I trust this sender" flow using Scenario 4.
-5. **Run Scenario 5**: "Here's the one decision I'd highlight most — trusting Alice doesn't mean InboxGuard stops checking Alice's emails. If her account is compromised, we still catch it." Show the HIGH RISK verdict despite the trust note.
+5. **Run Scenario 5**: "Here's the one decision I'd highlight most — trusting a sender doesn't mean InboxGuard stops checking their emails." Show that the same findings from Scenario 3 still appear, now alongside the trust note, which stays visually secondary to the verdict.
 6. **Briefly show technical details**: expand the Technical Details section, mention the architecture diagram in the README, and that the whole thing is covered by 27 automated tests.
