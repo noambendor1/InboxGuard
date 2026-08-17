@@ -358,6 +358,8 @@ Copy the printed Service URL — you'll paste it into the Add-on's `BACKEND_URL`
 
 Full beginner walkthrough (installing clasp, logging in, enabling the Apps Script API, pushing code, setting Script Properties, installing a test deployment) is in [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md).
 
+Want someone else to try *your* installation instead of deploying their own? See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) Part D — sharing a test deployment with specific people takes minutes; a real public listing on the Google Workspace Marketplace requires Google's OAuth verification review (2–6 weeks), since InboxGuard requests a sensitive scope.
+
 ## 15. Demo script
 
 See [`docs/DEMO.md`](docs/DEMO.md) for five ready-to-send sample emails and a 3–5 minute demo flow.
@@ -374,6 +376,7 @@ See [`docs/DEMO.md`](docs/DEMO.md) for five ready-to-send sample emails and a 3�
 - A proper trust-management screen (list/remove all trusted senders at once)
 - Org-wide admin policies (Workspace domain-level configuration)
 - An optional LLM explanation layer that only ever summarizes the *structured findings* InboxGuard already computed — never raw email content — to avoid reintroducing a prompt-injection surface while still improving the prose
+- Publishing to the Google Workspace Marketplace for real public distribution, once ready to invest in Google's OAuth verification review (see `docs/DEPLOYMENT.md` Part D)
 
 ---
 

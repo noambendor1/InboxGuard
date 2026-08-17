@@ -194,6 +194,35 @@ Success looks like: clasp lists every file it uploaded (`appsscript.json`, `Code
 
 ---
 
+## Part D — Letting someone else use *this* installation (without them deploying anything)
+
+Everything above sets up InboxGuard for your own Gmail account. If someone else wants to try it too, there are two different paths depending on how many people and how permanently.
+
+### D1. Share your existing installation with a specific person (fast, no cost to them)
+
+This lets a specific person install and use the exact copy you already deployed — your backend, your Cloud Run billing, your Apps Script project — without them creating anything of their own.
+
+1. **Add them as a Test user.** Go to <https://console.cloud.google.com/apis/credentials/consent?project=YOUR_PROJECT_ID>, confirm **Publishing status** is **Testing**, scroll to **Test users** → **+ ADD USERS**, and enter their Gmail address. (Up to 100 people at a time.)
+2. **Share the Apps Script project with them.** Open the project (`clasp open`), click **Share** (top right), add the same email address with **Viewer** access, and send them the link.
+3. **They open the link**, go to **Deploy** → **Test deployments** → **Install**, and approve the same "Google hasn't verified this app" consent screen you saw in step C8.
+4. They open Gmail — InboxGuard now runs for them too, using your backend and your configuration. They never see your shared secret or Safe Browsing key; Script Properties aren't exposed to other users.
+
+**Two things worth knowing:**
+- A test user's authorization **expires 7 days** after they grant it, so add them close to when they'll actually use it rather than far in advance.
+- This only works for OAuth scopes classified as "sensitive" (which is what InboxGuard uses) up to the 100-test-user cap. It does not scale beyond that without verification (see D2).
+
+### D2. Publish to the Google Workspace Marketplace (a real public directory)
+
+This is the option that makes an add-on discoverable/installable by anyone, the way a real product would be distributed — but it comes with a real cost in time, not money.
+
+Because InboxGuard requests a sensitive OAuth scope (`gmail.settings.basic`, for the block-sender filter), Google requires an **OAuth verification review** before the app can be used by more than the 100 test users above. As of this writing, that review typically takes **2-6 weeks**, and also expects a hosted privacy policy and a verified domain. This is a genuine, deliberate security measure Google applies to any app requesting access to Gmail data or settings - not something specific to this project, and not something a script or workaround can shortcut.
+
+For a take-home/demo project on a short timeline, D1 (or simply cloning the repo and deploying a personal copy, per the Quick Start) is the practical choice. Marketplace publication is listed here as the correct answer to "how would this become a real, publicly-installable product" - worth understanding, not worth pursuing for this purpose.
+
+Sources: [Manage App Audience](https://support.google.com/cloud/answer/15549945), [When is verification not needed](https://support.google.com/cloud/answer/13464323), [Configure OAuth for Workspace Marketplace](https://developers.google.com/workspace/marketplace/configure-oauth-consent-screen).
+
+---
+
 ## Redeploying after code changes
 
 Backend:
