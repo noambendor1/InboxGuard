@@ -12,7 +12,19 @@ To actually demo the product on a real Gmail account, see [`docs/DEMO.md`](docs/
 
 The condensed version, for anyone already comfortable with a command line, Google Cloud, and Apps Script. For literal, click-by-click beginner instructions (creating a Google Cloud project, enabling billing, creating a Safe Browsing key, etc.) use [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) instead.
 
-**1. Clone and verify the code works — no cloud account needed for this step:**
+### Prerequisites
+
+Install these first (all free). After installing anything here, **close and reopen your terminal** before continuing — a terminal window opened before an install won't see the newly installed command, which looks like an error but isn't one.
+
+| Tool | Check it's installed | Get it |
+|---|---|---|
+| Git | `git --version` | [git-scm.com/downloads](https://git-scm.com/downloads) |
+| Node.js 20+ (includes npm) | `node --version` | [nodejs.org](https://nodejs.org) |
+| Google Cloud CLI | `gcloud --version` | [cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install) — only needed for step 2 (deploying the backend) |
+
+You'll also need a Google account with a Google Cloud project (billing enabled — Cloud Run's free tier makes this effectively free for a demo) and a Gmail account for step 3.
+
+**1. Clone and verify the code works — no cloud account or the tools above needed for this step, only Git and Node.js:**
 ```bash
 git clone https://github.com/noambendor1/InboxGuard.git
 cd InboxGuard/backend
