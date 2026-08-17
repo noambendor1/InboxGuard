@@ -89,6 +89,13 @@ It shows one of three risk levels — **LOW RISK**, **SUSPICIOUS**, **HIGH RISK*
 
 InboxGuard is not just a detector. It's a decision-support tool: it converts a pile of technical security signals (SPF/DKIM/DMARC results, URL structure, Safe Browsing reputation, phishing language patterns, attachment metadata) into one simple verdict and one concrete next step.
 
+**What it looks like** — a real, live-tested result (see `docs/DEMO.md` Scenario 3) for a payment scam email, showing the verdict and reasons on the left, and the recommended action, user actions, and technical details below:
+
+<p>
+  <img src="docs/images/screenshot-verdict.jpg" alt="InboxGuard sidebar showing a SUSPICIOUS verdict with the reasons why" width="420" />
+  <img src="docs/images/screenshot-actions.jpg" alt="InboxGuard sidebar showing the recommended action, Block/Trust buttons, and technical details" width="420" />
+</p>
+
 ---
 
 ## 2. Product decisions
