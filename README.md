@@ -118,6 +118,8 @@ npm install && npm test   # 27 passed - verifies the core analysis logic without
 
 Deploying the backend (Cloud Run) and installing the Add-on (`clasp`) each take a few commands — see `docs/DEPLOYMENT.md` Parts A–C for the exact steps, including two real gotchas we hit deploying this ourselves (a `clasp` version bug, a `.clasp.json` placement quirk). Part D covers sharing an existing installation with someone else without them deploying anything of their own.
 
+**Where to find it once installed:** open Gmail, open any email, and look at the vertical icon rail on the far-right edge of the window — the same strip as Calendar/Tasks/Keep. InboxGuard shows up there as a blue shield: <img src="https://www.gstatic.com/images/icons/material/system/2x/security_googblue_48dp.png" alt="InboxGuard icon: a blue shield" width="24" />
+
 Demo script and five ready-to-send sample emails: [`docs/DEMO.md`](docs/DEMO.md).
 
 ---
