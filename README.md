@@ -24,6 +24,16 @@ Install these first (all free). After installing anything here, **close and reop
 
 You'll also need a Google account with a Google Cloud project (billing enabled — Cloud Run's free tier makes this effectively free for a demo) and a Gmail account for step 3.
 
+### Automated setup (Windows)
+
+If you're on Windows, [`scripts/setup-windows.ps1`](scripts/setup-windows.ps1) does steps 1–3 below for you: it checks for Git/Node.js/gcloud and installs anything missing (via `winget`), deploys the backend, and pushes the Add-on. Run it from the repository root:
+```powershell
+.\scripts\setup-windows.ps1
+```
+It will still open a real browser window twice for you to sign into Google yourself (once for `gcloud`, once for `clasp`) — no script should ever do that silently on your behalf — and it can't create a Google Cloud project or attach billing for you, since Google requires that to be done by a human in the Cloud Console. Everything else is automatic; it prints the two remaining manual clicks (setting Script Properties, installing the test deployment) at the end. See the comments at the top of the script for details.
+
+The steps below are the manual equivalent (also what to follow on macOS/Linux).
+
 **1. Clone and verify the code works — no cloud account or the tools above needed for this step, only Git and Node.js:**
 ```bash
 git clone https://github.com/noambendor1/InboxGuard.git
@@ -380,5 +390,7 @@ See [`docs/DEMO.md`](docs/DEMO.md) for five ready-to-send sample emails and a 3�
     ARCHITECTURE_AND_DECISIONS.md   Plain-language deep dive, no CS background assumed
     DEPLOYMENT.md                    Full beginner-friendly deployment walkthrough
     DEMO.md                          Sample emails + demo script
+  scripts/
+    setup-windows.ps1                Automated setup (installs prerequisites, deploys, pushes the Add-on)
   README.md          This file
 ```
