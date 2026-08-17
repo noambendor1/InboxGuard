@@ -177,7 +177,11 @@ Success looks like: clasp lists every file it uploaded (`appsscript.json`, `Code
 ### C8. Open Gmail and grant permission
 
 1. Go to <https://mail.google.com> and refresh the page.
-2. Open any email. Look for the **InboxGuard** icon in the right-hand side panel (the same rail where Calendar/Tasks/Keep icons live). Click it.
+2. Open any email. Look at the **vertical icon rail on the far right edge of the Gmail window** — the same strip where the Calendar, Tasks, and Keep icons live. InboxGuard's icon looks like this (a blue shield):
+
+   <img src="https://www.gstatic.com/images/icons/material/system/2x/security_googblue_48dp.png" alt="InboxGuard icon: a blue shield" width="40" />
+
+   It will be the last icon at the bottom of that rail (Gmail adds custom Add-ons after the built-in ones). Click it — a panel opens on the right side of the screen with the InboxGuard header.
 3. The first time, Google shows a consent screen listing what InboxGuard can access (the current email, Gmail filter settings, and permission to connect to your backend). Since this is your own unpublished test add-on, you may see a **"Google hasn't verified this app"** warning — this is expected for a personal test deployment. Click **Advanced**, then **Go to InboxGuard (unsafe)**, then **Allow**. ("Unsafe" here just means Google hasn't run its formal verification review on this specific unpublished project — not that anything is actually wrong.)
 
 **Success looks like:** the InboxGuard sidebar shows a risk verdict for the currently open email within a few seconds.

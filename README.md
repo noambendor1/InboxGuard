@@ -59,7 +59,11 @@ clasp push --force
 
 Then, in the Apps Script editor (`clasp open`): **Project Settings** → **Script Properties** → add `BACKEND_URL` (the Service URL from step 2) and `INBOXGUARD_SHARED_SECRET` (the same secret from step 2) → **Deploy** → **Test deployments** → **Install**.
 
-**4. Try it:** open Gmail, open any email, click the InboxGuard icon in the right-hand sidebar.
+**4. Try it:** open Gmail, open any email, then look at the vertical icon rail on the far-right edge of the window — the same strip as Calendar/Tasks/Keep. InboxGuard shows up there as a blue shield icon:
+
+<img src="https://www.gstatic.com/images/icons/material/system/2x/security_googblue_48dp.png" alt="InboxGuard icon: a blue shield" width="32" />
+
+Click it to open the analysis panel.
 
 ---
 

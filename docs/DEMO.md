@@ -10,7 +10,7 @@ All five scenarios assume you have the Gmail Add-on installed (see `docs/DEPLOYM
 2. Address it **to yourself**.
 3. Copy the subject and body below.
 4. For scenarios that need a link where the **visible text differs from the actual URL** (#3 and #5), don't just paste a URL — use Gmail's **Insert link** tool (the chain-link icon in the compose toolbar) so you can set the display text and the destination URL independently.
-5. Send, then open the email and click the InboxGuard icon in the right-hand sidebar.
+5. Send, then open the email and click the InboxGuard icon — the vertical icon rail on the far-right edge of Gmail, same strip as Calendar/Tasks/Keep, shown as a blue shield: <img src="https://www.gstatic.com/images/icons/material/system/2x/security_googblue_48dp.png" alt="InboxGuard icon" width="24" />
 
 ---
 
