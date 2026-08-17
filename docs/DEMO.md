@@ -1,6 +1,6 @@
 # Demo guide
 
-Five safe, self-contained sample emails you can send to your own inbox, plus a 3–5 minute demo flow. Nothing here is real malware — every "dangerous" link points at a private/non-routable address or a domain that doesn't resolve to anything, and InboxGuard never visits links anyway (see README §9). Don't click the demo links regardless.
+Five safe, self-contained sample emails you can send to your own inbox, plus a 3–5 minute demo flow. Nothing here is real malware — every "dangerous" link points at a private/non-routable address or a domain that doesn't resolve to anything, and InboxGuard never visits links anyway (see README, "Security & privacy"). Don't click the demo links regardless.
 
 All five scenarios assume you have the Gmail Add-on installed (see `docs/DEPLOYMENT.md`, Part C) and are sending emails **to yourself** from your own Gmail account (or any account — the point is just that they land in an inbox where you have the add-on installed).
 
@@ -71,7 +71,7 @@ For the link: use **Insert link**, set the display text to `account-billing.com`
 
 **Verified result:** InboxGuard correctly returns **SUSPICIOUS**, leading with "This link is displayed as 'account-billing.com' but actually points to '203.0.113.7'," followed by "One of the links points directly to a numeric address instead of a normal website name," and the content combination finding for the urgency/payment/threat language.
 
-To push this specific example over the line into HIGH RISK, add either a genuine sender mismatch (a display name claiming a real brand while the address doesn't match — see the display-name check in README §4) or a confirmed Safe Browsing match (README §5) - a link that looks clean structurally but is already known-bad is exactly the case that override exists for.
+To push this specific example over the line into HIGH RISK, add either a genuine sender mismatch (a display name claiming a real brand while the address doesn't match — see `backend/src/analysis/detectors/senderIdentity.ts`) or a confirmed Safe Browsing match (README, "How the detection works") - a link that looks clean structurally but is already known-bad is exactly the case that override exists for.
 
 ---
 

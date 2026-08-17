@@ -1,6 +1,10 @@
 # Deployment guide (beginner-friendly)
 
-This assumes you have never used Google Cloud, Apps Script, or `clasp` before. Follow the sections in order: **Part A** deploys the backend, **Part B** creates your Safe Browsing key, **Part C** installs the Gmail Add-on. Each step says exactly what to click or type, what to copy, and what success looks like.
+This assumes you have never used Google Cloud, Apps Script, or `clasp` before. Follow the sections in order: **Part A** deploys the backend, **Part B** creates your Safe Browsing key, **Part C** installs the Gmail Add-on, **Part D** covers sharing it with other people. Each step says exactly what to click or type, what to copy, and what success looks like.
+
+**Before you start**, make sure these are installed (all free): [Git](https://git-scm.com/downloads), [Node.js 20+](https://nodejs.org) (`node --version` to check), and the [Google Cloud CLI](https://cloud.google.com/sdk/docs/install) (`gcloud --version` to check — installed in Part A2 below if you don't have it). After installing anything, **close and reopen your terminal** before continuing — a terminal opened before an install won't see the new command yet.
+
+Prefer a single script over following these steps by hand? [`scripts/setup-windows.ps1`](../scripts/setup-windows.ps1) automates everything below except the two Google sign-ins and creating/billing the Cloud project.
 
 ---
 
@@ -68,7 +72,7 @@ gcloud run deploy inboxguard-backend \
 
 - The first time you run this, `gcloud` may ask to enable Artifact Registry or confirm a region — type `y` / press Enter to accept.
 - This builds your Dockerfile in the cloud (Cloud Build) and deploys it — it can take a few minutes the first time.
-- `--allow-unauthenticated` is required here because InboxGuard uses its own HMAC signing (§9 of the README) instead of Cloud Run's IAM auth for this demo.
+- `--allow-unauthenticated` is required here because InboxGuard uses its own HMAC signing (see the README's "Security & privacy" section) instead of Cloud Run's IAM auth for this demo.
 - Leave `SAFE_BROWSING_API_KEY` empty for now — you'll update it in Part B once you have a real key. The app works fine without it (Safe Browsing lookups just report "unavailable" and local heuristics still run).
 
 **Success looks like:** the command ends by printing a **Service URL**, something like:
@@ -117,10 +121,10 @@ Success looks like: `gcloud` prints the updated service details ending with the 
 ### C1. Install `clasp`
 
 ```bash
-npm install -g @google/clasp
+npm install -g @google/clasp@2.4.2
 clasp --version
 ```
-Success looks like: a version number printed.
+Success looks like: a version number printed. Pin the version to `2.4.2` specifically — newer `clasp` v3 releases have a known `Insufficient Permission` bug on `create` that has nothing to do with your Google account setup.
 
 ### C2. Turn on the Apps Script API for your account (one-time, per Google account)
 
@@ -143,9 +147,9 @@ cd addon
 clasp create --type standalone --title "InboxGuard" --rootDir ./src
 ```
 
-Success looks like: clasp prints a new **Script ID** and a link like `https://script.google.com/d/XXXXXXXXXX/edit`, and creates a `.clasp.json` file in the `addon/` folder.
+Success looks like: clasp prints a new **Script ID** and a link like `https://script.google.com/d/XXXXXXXXXX/edit`.
 
-> If clasp writes a fresh, empty `appsscript.json` or `Code.js` into `addon/src/` that overwrites the ones already in this repo, that's expected — the next step re-pushes our real source files over whatever clasp just generated.
+> **Two known quirks:** (1) clasp sometimes writes `.clasp.json` inside `addon/src/` instead of `addon/` - if so, move it up a level (`mv src/.clasp.json .` from the `addon/` folder) before continuing, otherwise `clasp push` looks for source files in a non-existent `src/src/` folder. (2) If clasp also writes a fresh, empty `appsscript.json` or `Code.js` into `addon/src/` that overwrites the ones already in this repo, that's expected too — the next step re-pushes our real source files over whatever clasp just generated.
 
 ### C5. Push the real source code
 

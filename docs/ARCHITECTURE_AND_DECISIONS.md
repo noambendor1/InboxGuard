@@ -115,7 +115,7 @@ This is an important one to be honest about, because it's a case where the "obvi
 **A pragmatic, documented shared-secret authentication scheme between the Add-on and the backend, instead of a production-grade credential system.**
 *What:* HMAC-SHA256 signing with one static secret, valid for ~5 minutes per request.
 *Why:* Simple to build, explain, and test; still meaningfully better than an unauthenticated endpoint.
-*Trade-off:* A single leaked secret compromises the channel until rotated, and there's no protection against a captured request being replayed within its validity window. Documented explicitly (README §9) as something to upgrade to Google-signed identity tokens in a real production system.
+*Trade-off:* A single leaked secret compromises the channel until rotated, and there's no protection against a captured request being replayed within its validity window. Documented explicitly (README, "Security & privacy") as something to upgrade to Google-signed identity tokens in a real production system.
 
 ---
 
