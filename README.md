@@ -1,5 +1,7 @@
 # <img src="https://www.gstatic.com/images/icons/material/system/2x/security_googblue_48dp.png" alt="" width="32" valign="middle" /> InboxGuard
 
+[![Backend CI](https://github.com/noambendor1/InboxGuard/actions/workflows/backend-ci.yml/badge.svg)](https://github.com/noambendor1/InboxGuard/actions/workflows/backend-ci.yml)
+
 InboxGuard is a Gmail Add-on that looks at the email you currently have open and tells you, in plain language, whether it looks risky, why, and what to do about it — a Google Apps Script Add-on (thin client) backed by a Node.js/TypeScript service that does the actual analysis, with Google Safe Browsing folded in as one signal among several.
 
 For a deeper explanation of the architecture and technical decisions, see [`docs/ARCHITECTURE_AND_DECISIONS.md`](docs/ARCHITECTURE_AND_DECISIONS.md). To demo it on a real Gmail account, see [`docs/DEMO.md`](docs/DEMO.md).
